@@ -122,7 +122,11 @@ server <- shinyServer(function(input, output, session) {
     l <- layout.bipartite(g)
     if(ecount(g)>0)
       E(g)$width <- E(g)$weight
-    plot(g, layout = l, vertex.size = 25, vertex.label.color = "black", vertex.label.family = "sans")
+    if (!is.null(data$df))
+      V(g)$size <- colMeans(data$df) * 10
+    else
+      V(g)$size = 0
+    plot(g, layout = l, vertex.label.color = "black", vertex.label.family = "sans")
   })
 
   output$matrix <- renderDataTable({
