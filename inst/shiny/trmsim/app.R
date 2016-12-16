@@ -79,66 +79,42 @@ ui <- shinyUI(ui = {
 })
 
 server <- shinyServer(function(input, output, session) {
-  r1 <- reactive({
-    input$updateregulator
-    isolate({
-      rnorm(input$nsample, mean = input$r1mean, sd = input$r1sd)
-    })
-  })
+  m <- matrix(0, nrow = 3, ncol = 3)
+  colnames(m) <- c("G1", "G2", "G3")
+  rownames(m) <- c("R1", "R2", "R3")
 
-  r2 <- reactive({
-    input$updateregulator
-    isolate({
-      rnorm(input$nsample, mean = input$r2mean, sd = input$r2sd)
-    })
-  })
+  data <- reactiveValues(df = NULL, model = m)
 
-  r3 <- reactive({
-    input$updateregulator
-    isolate({
-      rnorm(input$nsample, mean = input$r3mean, sd = input$r3sd)
-    })
-  })
+  observeEvent(input$update, {
+    set.seed(input$seed)
 
-  g1 <- reactive({
-    r1() * input$g1r1w + r2() * input$g1r2w + r3() * input$g1r3w
-  })
+    # regulators.
+    r1 <- rnorm(input$nsample, mean = input$r1mean, sd = input$r1sd)
+    r2 <- rnorm(input$nsample, mean = input$r2mean, sd = input$r2sd)
+    r3 <- rnorm(input$nsample, mean = input$r3mean, sd = input$r3sd)
 
-  g2 <- reactive({
-    r1() * input$g2r1w + r2() * input$g2r2w + r3() * input$g2r3w
-  })
+    # model.
+    data$model[, "G1"] <- c(input$g1r1w, input$g1r2w, input$g1r3w)
+    data$model[, "G2"] <- c(input$g1r1w, input$g1r2w, input$g1r3w)
+    data$model[, "G3"] <- c(input$g1r1w, input$g1r2w, input$g1r3w)
 
-  g3 <- reactive({
-    r1() * input$g3r1w + r2() * input$g3r2w + r3() * input$g3r3w
-  })
+    # network
+    g1 <- r1 * input$g1r1w + r2 * input$g1r2w + r3 * input$g1r3w
+    g2 <- r1 * input$g2r1w + r2 * input$g2r2w + r3 * input$g2r3w
+    g3 <- r1 * input$g3r1w + r2 * input$g3r2w + r3 * input$g3r3w
 
-  imatrix <- reactive({
-    data.frame(
-      r1 = r1(),
-      r2 = r2(),
-      r3 = r3(),
-      g1 = g1(),
-      g2 = g2(),
-      g3 = g3()
+    data$df <- data.frame(
+      r1 = r1,
+      r2 = r2,
+      r3 = r3,
+      g1 = g1,
+      g2 = g2,
+      g3 = g3
     )
-  })
-
-  model <- reactive({
-    m <- matrix(
-      c(
-        c(input$g1r1w, input$g1r2w, input$g1r3w),
-        c(input$g2r1w, input$g2r2w, input$g2r3w),
-        c(input$g3r1w, input$g3r2w, input$g3r3w)
-      ),
-      ncol = 3
-    )
-    colnames(m) <- c("G1", "G2", "G3")
-    rownames(m) <- c("R1", "R2", "R3")
-    m
   })
 
   output$graphplot <- renderPlot({
-    g <- graph_from_incidence_matrix(model(), directed = TRUE, multiple = FALSE, mode = "out", weighted = TRUE)
+    g <- graph_from_incidence_matrix(data$model, directed = TRUE, multiple = FALSE, mode = "out", weighted = TRUE)
     V(g)$color <- "steelblue2"
     V(g)[ type ]$color <- "grey"
     V(g)$shape <- "square"
@@ -150,16 +126,26 @@ server <- shinyServer(function(input, output, session) {
   })
 
   output$matrix <- renderDataTable({
-    imatrix()
+    data$df
   })
 
   output$expression <- renderPlot({
-    dd <- imatrix() %>% gather("gene", "value")
-    ggplot(dd,aes(x=value)) + geom_histogram() + facet_wrap(~gene)
+    if (!is.null(data$df)) {
+      dd <- data$df %>% gather("gene", "value")
+      ggplot(dd, aes(x = value)) + geom_histogram() + facet_wrap(~gene)
+    }
+  })
+
+  output$regulators <- renderPlot({
+    if (!is.null(data$df)) {
+      dd <- data$df %>% gather("gene", "value") %>% mutate(type = sub(".$", "", gene)) %>% filter(type == "r")
+      ggplot(dd, aes(x = value, fill = gene)) + geom_histogram() + facet_wrap(~gene, ncol = 1)
+    }
   })
 
   output$correlation <- renderPlot({
-    pairs(imatrix())
+    if (!is.null(data$df))
+      pairs(data$df)
   })
 })
 
