@@ -7,44 +7,58 @@ ui <- shinyUI(ui = {
     headerPanel("rTRM+ simulator"),
     sidebarPanel(
       h3("General"),
-      sliderInput("nsample", "nsample", min = 1, max = 1000, value = 100),
-      actionButton("updateregulator", "Update"),
-      #numericInput("seed", "seed", value = 123),
-      conditionalPanel(
-        condition = "input.tabs == 'Expression'",
-        h3("Regulators"),
-        h5("R1"),
-        sliderInput("r1mean", "mean", value = 1, min = 0, max = 10),
-        sliderInput("r1sd", "sd", value = 1, min = 0, max = 10),
-        h5("R2"),
-        sliderInput("r2mean", "mean", value = 1, min = 0, max = 10),
-        sliderInput("r2sd", "sd", value = 1, min = 0, max = 10),
-        h5("R3"),
-        sliderInput("r3mean", "mean", value = 1, min = 0, max = 10),
-        sliderInput("r3sd", "sd", value = 1, min = 0, max = 10)
-      ),
-      conditionalPanel(
-        condition = "input.tabs == 'Graph'",
-        h3("Genes"),
-        h5("G1"),
-        sliderInput("g1r1w", "R1 weight", value = 0, min = 0, max = 10),
-        sliderInput("g1r2w", "R2 weight", value = 0, min = 0, max = 10),
-        sliderInput("g1r3w", "R3 weight", value = 0, min = 0, max = 10),
-        h5("G2"),
-        sliderInput("g2r1w", "R1 weight", value = 0, min = 0, max = 10),
-        sliderInput("g2r2w", "R2 weight", value = 0, min = 0, max = 10),
-        sliderInput("g2r3w", "R3 weight", value = 0, min = 0, max = 10),
-        h5("G3"),
-        sliderInput("g3r1w", "R1 weight", value = 0, min = 0, max = 10),
-        sliderInput("g3r2w", "R2 weight", value = 0, min = 0, max = 10),
-        sliderInput("g3r3w", "R3 weight", value = 0, min = 0, max = 10)
-      )
+      sliderInput("nsample", "nsample", min = 100, max = 1000, value = 100, step = 100),
+      numericInput("seed", "seed", value = 123),
+      actionButton("update", "Update")
     ),
     mainPanel(
       tabsetPanel(
         id = "tabs",
         tabPanel(
-          title = "Graph",
+          title = "Regulators",
+          h3("Regulators"),
+          inputPanel(
+            column(12,
+                   h5("R1"),
+                   sliderInput("r1mean", "mean", value = 1, min = 0, max = 5),
+                   sliderInput("r1sd", "sd", value = 1, min = 0, max = 5)
+            ),
+            column(12,
+                   h5("R2"),
+                   sliderInput("r2mean", "mean", value = 1, min = 0, max = 5),
+                   sliderInput("r2sd", "sd", value = 1, min = 0, max = 5)
+            ),
+            column(12,
+                   h5("R3"),
+                   sliderInput("r3mean", "mean", value = 1, min = 0, max = 5),
+                   sliderInput("r3sd", "sd", value = 1, min = 0, max = 5)
+            )
+          ),
+          plotOutput("regulators")
+        ),
+        tabPanel(
+          title = "Network",
+          h3("Weights"),
+          inputPanel(
+            column(12,
+                   h5("G1"),
+                   sliderInput("g1r1w", "R1 weight", value = 0, min = 0, max = 5),
+                   sliderInput("g1r2w", "R2 weight", value = 0, min = 0, max = 5),
+                   sliderInput("g1r3w", "R3 weight", value = 0, min = 0, max = 5)
+            ),
+            column(12,
+                   h5("G2"),
+                   sliderInput("g2r1w", "R1 weight", value = 0, min = 0, max = 5),
+                   sliderInput("g2r2w", "R2 weight", value = 0, min = 0, max = 5),
+                   sliderInput("g2r3w", "R3 weight", value = 0, min = 0, max = 5)
+            ),
+            column(12,
+                   h5("G3"),
+                   sliderInput("g3r1w", "R1 weight", value = 0, min = 0, max = 5),
+                   sliderInput("g3r2w", "R2 weight", value = 0, min = 0, max = 5),
+                   sliderInput("g3r3w", "R3 weight", value = 0, min = 0, max = 5)
+            )
+          ),
           plotOutput("graphplot"),
           plotOutput("correlation")
         ),
