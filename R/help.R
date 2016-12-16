@@ -1,9 +1,9 @@
-#' trmsim
+#' simtrn
 #'
 #' Simulation of Transcriptional Regulatory Networks
 #'
-#' @name trmsim-package
-#' @aliases trmsim
+#' @name simtrn-package
+#' @aliases simtrn
 #' @docType package
 #'
 #' @import shiny igraph ggplot2 graphics

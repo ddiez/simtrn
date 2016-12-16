@@ -1,16 +1,18 @@
-Package: trmsim
+Package: simtrn
 Type: Package
 Title: Simulation of Transcriptional Regulatory Networks
 Version: 0.1.0
 Authors@R: person("Diego", "Diez", email = "diego10ruiz@gmail.com", role = c("aut", "cre"))
 Description: This package is a simple simulator of transcriptional regulatory
-    networks (TRMs). It contains a small shiny app that helps understand the
+    networks (TRNs). It contains a small shiny app that helps understand the
     relation between genes under networks with different structures.
 Imports:
   graphics,
   ggplot2,
   igraph,
   shiny
+Suggests:
+    testthat
 License: MIT
 Encoding: UTF-8
 LazyData: true

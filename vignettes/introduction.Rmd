@@ -1,0 +1,36 @@
+---
+title: "Introduction"
+author: "Diego Diez"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(simtrn)
+library(igraph)
+```
+
+
+```{r}
+foo <- sim_trn(nreg = 3, ngene = 5, seed = 12)
+m <- cbind(foo$reg_value, foo$gene_value)
+
+g <- graph_from_incidence_matrix(foo$mod_info, directed = TRUE, mode = "out", weighted = TRUE)
+l <- layout.bipartite(g)
+
+V(g)$size <- colMeans(m) * 5
+
+E(g)$width <- E(g)$weight
+
+V(g)$color = "grey"
+V(g)[type]$color <- "orange"
+V(g)$shape = "square"
+V(g)[type]$shape <- "circle"
+plot(g, layout = l)
+heatmap(m)
+```
+
