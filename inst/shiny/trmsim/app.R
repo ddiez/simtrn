@@ -8,6 +8,7 @@ ui <- shinyUI(ui = {
     sidebarPanel(
       h3("General"),
       sliderInput("nsample", "nsample", min = 1, max = 1000, value = 100),
+      actionButton("updateregulator", "Update"),
       #numericInput("seed", "seed", value = 123),
       conditionalPanel(
         condition = "input.tabs == 'Expression'",
@@ -20,8 +21,7 @@ ui <- shinyUI(ui = {
         sliderInput("r2sd", "sd", value = 1, min = 0, max = 10),
         h5("R3"),
         sliderInput("r3mean", "mean", value = 1, min = 0, max = 10),
-        sliderInput("r3sd", "sd", value = 1, min = 0, max = 10),
-        actionButton("updateregulator", "Update")
+        sliderInput("r3sd", "sd", value = 1, min = 0, max = 10)
       ),
       conditionalPanel(
         condition = "input.tabs == 'Graph'",
