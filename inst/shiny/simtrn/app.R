@@ -95,8 +95,8 @@ server <- shinyServer(function(input, output, session) {
 
     # model.
     data$model[, "G1"] <- c(input$g1r1w, input$g1r2w, input$g1r3w)
-    data$model[, "G2"] <- c(input$g1r1w, input$g1r2w, input$g1r3w)
-    data$model[, "G3"] <- c(input$g1r1w, input$g1r2w, input$g1r3w)
+    data$model[, "G2"] <- c(input$g2r1w, input$g2r2w, input$g2r3w)
+    data$model[, "G3"] <- c(input$g3r1w, input$g3r2w, input$g3r3w)
 
     # network
     g1 <- r1 * input$g1r1w + r2 * input$g1r2w + r3 * input$g1r3w
