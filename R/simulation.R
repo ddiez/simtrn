@@ -39,7 +39,7 @@ sim_trn <- function(n = 10, nreg = 3, ngene = 3, seed = NULL, reg_info = NULL, m
 
   # generate values for regulators.
   reg_value <- lapply(seq_len(nreg), function(k) {
-    rnorm(n, mean = reg_info[k, "mean"], sd = reg_info[k, "sd"])
+    sim_reg(n, mean = reg_info[k, "mean"], sd = reg_info[k, "sd"])
   })
   names(reg_value) <- regname
   reg_value <- do.call(cbind, reg_value)
@@ -52,4 +52,8 @@ sim_trn <- function(n = 10, nreg = 3, ngene = 3, seed = NULL, reg_info = NULL, m
   gene_value <- do.call(cbind, gene_value)
 
   list(mod_info = mod_info, reg_info = reg_info, reg_value = reg_value, gene_value = gene_value)
+}
+
+sim_reg <- function(n = 10, mean = 1, sd = 1) {
+ rnorm(n, mean, sd)
 }
